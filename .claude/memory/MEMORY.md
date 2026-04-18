@@ -16,6 +16,17 @@
 - **Timeline**: 3 weeks to MVP — started 2026-04-19
 - **Why**: Zero competition for electric isometric growing game, high viral potential
 
+## Development Progress
+- **Status**: Active development — started 2026-04-19
+- **Last commit**: `e0d6bf0` — isometric grid, player spark, absorbable objects
+- **Built so far**:
+  - Isometric renderer (`src/iso.js`) — tile grid, camera follow
+  - Player spark (`src/player.js`) — glowing orb, lightning bolts, WASD movement, grow on absorb
+  - Objects (`src/objects.js`) — battery/coin/LED/plug with glow, absorption mechanic, score, respawn
+  - Game loop (`src/game.js`) — HUD with tier name + wattage score
+  - Local server: `python3 -m http.server 8080` → http://localhost:8080
+- **Next**: Buildings with 3D height, then chain lightning effect
+
 ## GitHub
 - **Repo**: https://github.com/lnaul/bolt.git (branch: main)
 - **Auth**: PAT stored in remote URL (HTTPS) — if push fails, regenerate token and run:
