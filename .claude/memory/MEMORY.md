@@ -33,3 +33,15 @@
 - **Auth**: PAT stored in remote URL (HTTPS) — if push fails, regenerate token and run:
   `git remote set-url origin https://NEW_TOKEN@github.com/lnaul/bolt.git`
 - Token was exposed in chat 2026-04-19 — user advised to revoke and regenerate
+
+## Setting up on a new machine
+```bash
+git clone https://github.com/lnaul/bolt.git
+cd bolt
+python3 -m http.server 8080
+```
+Then set a new GitHub PAT for pushing:
+```bash
+git remote set-url origin https://YOUR_TOKEN@github.com/lnaul/bolt.git
+```
+Open Claude Code in the `bolt` folder — memory is in `.claude/memory/MEMORY.md`
