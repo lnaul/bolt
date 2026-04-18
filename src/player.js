@@ -5,16 +5,40 @@ class Player {
     this.size = 16;
     this.speed = 5;
     this.time = 0;
+    this.targetX = null;
+    this.targetY = null;
+  }
+
+  setTarget(worldX, worldY) {
+    this.targetX = worldX;
+    this.targetY = worldY;
   }
 
   update(dt, keys) {
     this.time += dt;
     const spd = this.speed * dt;
 
-    if (keys['ArrowUp']    || keys['w'] || keys['W']) { this.x -= spd * 0.5; this.y -= spd * 0.5; }
-    if (keys['ArrowDown']  || keys['s'] || keys['S']) { this.x += spd * 0.5; this.y += spd * 0.5; }
-    if (keys['ArrowLeft']  || keys['a'] || keys['A']) { this.x -= spd * 0.5; this.y += spd * 0.5; }
-    if (keys['ArrowRight'] || keys['d'] || keys['D']) { this.x += spd * 0.5; this.y -= spd * 0.5; }
+    let moved = false;
+
+    // Keyboard
+    if (keys['ArrowUp']    || keys['w'] || keys['W']) { this.x -= spd * 0.5; this.y -= spd * 0.5; moved = true; }
+    if (keys['ArrowDown']  || keys['s'] || keys['S']) { this.x += spd * 0.5; this.y += spd * 0.5; moved = true; }
+    if (keys['ArrowLeft']  || keys['a'] || keys['A']) { this.x -= spd * 0.5; this.y += spd * 0.5; moved = true; }
+    if (keys['ArrowRight'] || keys['d'] || keys['D']) { this.x += spd * 0.5; this.y -= spd * 0.5; moved = true; }
+
+    // Tap-to-move
+    if (!moved && this.targetX !== null) {
+      const dx = this.targetX - this.x;
+      const dy = this.targetY - this.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > 0.15) {
+        this.x += (dx / dist) * spd;
+        this.y += (dy / dist) * spd;
+      } else {
+        this.targetX = null;
+        this.targetY = null;
+      }
+    }
 
     this.x = Math.max(0.5, Math.min(ISO.GRID_SIZE - 1.5, this.x));
     this.y = Math.max(0.5, Math.min(ISO.GRID_SIZE - 1.5, this.y));

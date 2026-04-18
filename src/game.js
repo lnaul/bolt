@@ -6,6 +6,7 @@ class Game {
     this.player = new Player(ISO.GRID_SIZE / 2, ISO.GRID_SIZE / 2);
     this.objects = new ObjectManager();
     this.lastTime = 0;
+    this.tapIndicator = null;
     this.setupInput();
   }
 
@@ -15,6 +16,35 @@ class Game {
       if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
     });
     window.addEventListener('keyup', e => { this.keys[e.key] = false; });
+
+    const onPointer = (sx, sy) => {
+      const cam = this.getCamera();
+      const wx = sx - cam.x;
+      const wy = sy - cam.y;
+      const a = wx / (ISO.TILE_W / 2);
+      const b = wy / (ISO.TILE_H / 2);
+      this.player.setTarget((a + b) / 2, (b - a) / 2);
+      this.tapIndicator = { x: sx, y: sy, t: 0 };
+    };
+
+    this.canvas.addEventListener('click', e => {
+      const r = this.canvas.getBoundingClientRect();
+      onPointer(e.clientX - r.left, e.clientY - r.top);
+    });
+
+    this.canvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      const r = this.canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      onPointer(t.clientX - r.left, t.clientY - r.top);
+    }, { passive: false });
+
+    this.canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      const r = this.canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      onPointer(t.clientX - r.left, t.clientY - r.top);
+    }, { passive: false });
   }
 
   getCamera() {
@@ -80,7 +110,7 @@ class Game {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ffffff22';
     ctx.font = '11px monospace';
-    ctx.fillText('WASD / Arrow Keys to move', this.canvas.width / 2, this.canvas.height - 16);
+    ctx.fillText('Tap to move  •  WASD / Arrows', this.canvas.width / 2, this.canvas.height - 16);
   }
 
   update(timestamp) {
@@ -88,6 +118,10 @@ class Game {
     this.lastTime = timestamp;
     this.player.update(dt, this.keys);
     this.objects.update(dt, this.player);
+    if (this.tapIndicator) {
+      this.tapIndicator.t += dt;
+      if (this.tapIndicator.t > 0.4) this.tapIndicator = null;
+    }
   }
 
   draw() {
@@ -103,6 +137,18 @@ class Game {
     const cam = this.getCamera();
     this.drawGrid(cam);
     this.objects.draw(ctx, cam, this.player.size);
+
+    // Tap indicator
+    if (this.tapIndicator) {
+      const { x, y, t } = this.tapIndicator;
+      const alpha = 1 - t / 0.4;
+      const r = 12 + t * 30;
+      ctx.strokeStyle = `rgba(0, 212, 255, ${alpha})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
 
     const pPos = ISO.toScreen(this.player.x, this.player.y);
     this.player.draw(ctx, pPos.x + cam.x, pPos.y + cam.y + ISO.TILE_H / 2);
