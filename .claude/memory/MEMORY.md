@@ -34,6 +34,20 @@
   `git remote set-url origin https://NEW_TOKEN@github.com/lnaul/bolt.git`
 - Token was exposed in chat 2026-04-19 — user advised to revoke and regenerate
 
+## Project: Portfolio Website
+- **Repo**: https://github.com/lnaul/portfolio-frontend
+- **Live**: https://portfolio-frontend-one-omega.vercel.app
+- **Stack**: React + Vite, deployed on Vercel
+- **Plan**: Restructure into monorepo with 2-3 example one-page websites as sub-routes
+- **Architecture**: React Router — all projects under one app, one deployment
+  - `yoursite.com/` — main portfolio
+  - `yoursite.com/project-1` — example site 1
+  - `yoursite.com/project-2` — example site 2
+- **Status**: Planning phase — folder connection pending
+- **Structure**:
+  - `portfolio-frontend/` — main site (Header, Footer, AudioPlayer, CustomCursor, SplitTextAnimation)
+  - `project-1/`, `project-2/`, `project-3/` — example sites to be built
+
 ## Setting up on a new machine
 ```bash
 git clone https://github.com/lnaul/bolt.git
